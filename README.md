@@ -1,38 +1,34 @@
-Step 1. Copy library's directory to our project's root directory.
+references: 
+http://blog.csdn.net/wwj_748/article/details/42523611
+http://blog.csdn.net/superjunjin/article/details/45022595
 
-Step 2. Modify the "settings.gradle" in your project's root directory, like this:
+1. 自定义动画
+/PullToRefresh/res/drawable/home_refresh_anim.xml
 
-	include ':app',':pulltorefresh'
+2. 修改下拉刷新布局：
+/PullToRefresh/res/layout/pull_to_refresh_header_my.xml
 
-Step 3. Modify the "build.gradle" under directory "app", add a line in the block "dependencies", like this:
+3. 增加自定义的加载布局
+/PullToRefresh/src/com/handmark/pulltorefresh/library/internal/TweenAnimLoadingLayout.Java	
 
-dependencies {
-	...
-    compile project(':pulltorefresh')
-}
+4. 我们只要修改开源项目中的LodingLayout代码：
+/PullToRefresh/src/com/handmark/pulltorefresh/library/internal/LoadingLayout.java
+注释掉不需要的部分(ProgressBar和SubHeaderText)
 
-Step 4. Create a "build.gradle" file under the library's root, its content like this:
+5. 替换之前的刷新layout为TweenAnimLoadingLayout
+找到PullToRefreshListView，发现头脚的layout用的都是LoadingLayout，找到头脚layout的创建方法createLoadingLayout进入，在createLoadingLayout方法中再进入createLoadingLayout，找到最原始的新建动画layout的地方，把默认的RotateLoadingLayout改成TweenAnimLoadingLayout就行了
 
-apply plugin: 'com.android.library'
+在PullToRefreshBase类下，修改
 
-android {
-	compileSdkVersion 16
-	buildToolsVersion "23.0.3"
+//在最原始的地方把新建动画layout换成TweenAnimLoadingLayout  
+        LoadingLayout createLoadingLayout(Context context, Mode mode, Orientation scrollDirection, TypedArray attrs) {  
+            switch (this) {  
+                case ROTATE:  
+                default:  
+//                  return new RotateLoadingLayout(context, mode, scrollDirection, attrs);  
+                    return new TweenAnimLoadingLayout(context, mode, scrollDirection, attrs);  
+                case FLIP:  
+                    return new FlipLoadingLayout(context, mode, scrollDirection, attrs);  
+            }  
+        }  
 
-	sourceSets {
-		main {
-			manifest.srcFile 'AndroidManifest.xml'
-			java.srcDirs = ['src']
-			resources.srcDirs = ['src']
-			aidl.srcDirs = ['aidl']
-			renderscript.srcDirs = ['src']
-			res.srcDirs = ['res']
-			assets.srcDirs = ['assets']
-		}
-	}
-}
-
-
-Notice the first line apply plugin: 'com.android.library' , it's different from the app's build.gradle.
-
-Step 5. I think it's time to Sync the project. 
