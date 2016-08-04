@@ -22,14 +22,15 @@ http://blog.csdn.net/superjunjin/article/details/45022595
 在PullToRefreshBase类下，修改
 
 //在最原始的地方把新建动画layout换成TweenAnimLoadingLayout  
-        LoadingLayout createLoadingLayout(Context context, Mode mode, Orientation scrollDirection, TypedArray attrs) {  
-            switch (this) {  
-                case ROTATE:  
-                default:  
-//                  return new RotateLoadingLayout(context, mode, scrollDirection, attrs);  
-                    return new TweenAnimLoadingLayout(context, mode, scrollDirection, attrs);  
-                case FLIP:  
-                    return new FlipLoadingLayout(context, mode, scrollDirection, attrs);  
+```java
+    LoadingLayout createLoadingLayout(Context context, Mode mode, Orientation scrollDirection, TypedArray attrs) {  
+        switch (this) {  
+            case ROTATE:  
+            default:  
+//              return new RotateLoadingLayout(context, mode, scrollDirection, attrs);  
+                return new TweenAnimLoadingLayout(context, mode, scrollDirection, attrs);  
+            case FLIP:  
+                return new FlipLoadingLayout(context, mode, scrollDirection, attrs);  
             }  
         }  
-
+```
